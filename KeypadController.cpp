@@ -12,7 +12,9 @@ static const byte ROWS = 4;
       {'*','0','#','D'}
     };
 
-KeypadController::KeypadController():
+KeypadController::KeypadController(DigitalOutputController* digitalOutputController, IRSender* irSender):
+  digitalOutputController(digitalOutputController),
+  irSender(irSender),
   pad(Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS )) {
 }
 
@@ -22,11 +24,33 @@ void KeypadController::onLoop() {
   if (key) {
     switch(key) {
       case 'A':
-        //saltLamp.toggle();
+        digitalOutputController->toggleSaltLamp();
         break;
       case 'B':
+        irSender->sendEdifierCode(EDIFIER_PWR);
         break;
-        //turbine.toggle();
+      case 'C':
+        irSender->sendLGCode(LG_PWR);
+        break;
+      case 'D':
+        irSender->sendLGCode(LG_QMENU);
+        delay(1000);
+        irSender->sendLGCode(LG_LEFT);
+        delay(3000);
+        irSender->sendLGCode(LG_OK);
+        delay(1000);
+        for (int i = 0; i < 3; i++) {
+          irSender->sendLGCode(LG_DOWN);
+          delay(1000);
+        }
+        irSender->sendLGCode(LG_EXIT);
+        break;
+      case '#':
+        irSender->sendEdifierCode(EDIFIER_VOL_UP);
+        break;
+      case '*':
+        irSender->sendEdifierCode(EDIFIER_VOL_DOWN);
+        break;
     }
   }
 }

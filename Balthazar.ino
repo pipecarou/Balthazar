@@ -1,21 +1,29 @@
 #include "IRReceiver.h"
 #include "KeypadController.h"
 
-IRReceiver* receiver;
-//KeypadController keypadController;
+#ifndef IRSENDER_IMPORT
+  #define IRSENDER_IMPORT
+  #include "IRSender.h"
+#endif
 
-DigitalOutputController* digitalOutputController;
+IRReceiver* receiver;
+KeypadController* keypadController;
+
+IRSender* irSender;
 
 void setup() {
   Serial.begin(115200);
-  digitalOutputController = new DigitalOutputController();
+  DigitalOutputController* digitalOutputController = new DigitalOutputController();
   digitalOutputController->onSetup();
-  receiver = new IRReceiver(digitalOutputController);
+  irSender = new IRSender();
+  
+  receiver = new IRReceiver(digitalOutputController, irSender);
   receiver->onSetup();
+
+  keypadController = new KeypadController(digitalOutputController, irSender);
 }
 
 void loop() {
   receiver->onLoop();
-  //keypadController.onLoop();
-  delay(100);
+  keypadController->onLoop();
 }

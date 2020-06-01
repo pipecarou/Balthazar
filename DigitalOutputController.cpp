@@ -1,4 +1,7 @@
-#include "DigitalOutputController.h"
+#ifndef DOC_GUARD
+  #define DOC_GUARD
+  #include "DigitalOutputController.h"
+#endif
 
 DigitalOutputController::DigitalOutputController():
   saltLamp(SimpleDigitalOutput(SALT_LAMP_PIN)),

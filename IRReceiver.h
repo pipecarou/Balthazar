@@ -1,5 +1,17 @@
-#include <IRremote.h>
-#include "DigitalOutputController.h"
+#ifndef IR_IMPORT
+  #define IR_IMPORT
+  #include <IRremote.h>
+#endif
+
+#ifndef IRSENDER_IMPORT
+  #define IRSENDER_IMPORT
+  #include "IRSender.h"
+#endif
+
+#ifndef DOC_GUARD
+  #define DOC_GUARD
+  #include "DigitalOutputController.h"
+#endif
 
 #define RECV_PIN 5
 #define KEY_1         0xFFA25D
@@ -42,11 +54,15 @@ class IRReceiver {
   private:
     IRrecv receiver;
     DigitalOutputController* digitalOutputController;
+    IRSender* irSender;
     decode_results results;
     unsigned long lastResult;
     String getCommand(unsigned long* code);
   public:
-    IRReceiver(DigitalOutputController* digitalOutputController);
+    IRReceiver(
+      DigitalOutputController* digitalOutputController,
+      IRSender* irSender
+    );
     void onSetup();
     void onLoop();
 };

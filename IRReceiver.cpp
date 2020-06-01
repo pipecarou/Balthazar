@@ -1,8 +1,9 @@
 #include <IRremote.h>
 #include "IRReceiver.h"
 
-IRReceiver::IRReceiver(DigitalOutputController* digitalOutputController):
+IRReceiver::IRReceiver(DigitalOutputController* digitalOutputController, IRSender* irSender):
   digitalOutputController(digitalOutputController),
+  irSender(irSender),
   receiver(IRrecv(RECV_PIN)),
   results(decode_results()),
   lastResult(0) {
@@ -79,6 +80,7 @@ String IRReceiver::getCommand(unsigned long* code) {
     case KEY_0:
     case KEY_0_ALT:
       return "0";
+      irSender->sendEdifierCode(EDIFIER_PWR);
       break;
     case KEY_HASH:
     case KEY_HASH_ALT:
